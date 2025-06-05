@@ -1,0 +1,76 @@
+<.header>
+  Workflow Canvas
+  <:subtitle>
+    Create and manage your workflow diagrams with SvelteFlow-style visualization
+  </:subtitle>
+  <:actions>
+    <.link patch={~p"/workflows/new"}>
+      <.button>New Workflow</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.svelte name="CounterTest" socket={@socket} props={%{counter: @counter}} />
+<h1>counter: {@counter}</h1>
+
+<div
+  id="workflows"
+  phx-update="stream"
+  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6"
+>
+  <div
+    :for={{id, workflow} <- @streams.workflows}
+    id={id}
+    class="workflow-card bg-white rounded-lg border border-gray-200 p-6 cursor-pointer"
+    phx-click={JS.navigate(~p"/workflows/#{workflow}")}
+  >
+    <div class="flex items-start justify-between mb-4">
+      <div>
+        <h3 class="text-lg font-semibold text-gray-900">{workflow.name}</h3>
+        <p class="text-sm text-gray-600 mt-1">{workflow.description}</p>
+      </div>
+      <div class="flex space-x-2" onclick="event.stopPropagation()">
+        <.link patch={~p"/workflows/#{workflow}/edit"} class="text-gray-400 hover:text-gray-600">
+          <.icon name="hero-pencil-square" class="h-5 w-5" />
+        </.link>
+        <.link
+          phx-click={JS.push("delete", value: %{id: workflow.id}) |> hide("##{id}")}
+          data-confirm="Are you sure?"
+          class="text-gray-400 hover:text-red-600"
+        >
+          <.icon name="hero-trash" class="h-5 w-5" />
+        </.link>
+      </div>
+    </div>
+
+    <div class="border border-gray-100 rounded-md p-3 bg-gray-50 mb-4">
+      <div class="flex items-center justify-center h-24 text-gray-400">
+        <div class="text-center">
+          <.icon name="hero-squares-2x2" class="h-8 w-8 mx-auto mb-1" />
+          <div class="text-xs">Workflow Preview</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between text-sm text-gray-500">
+      <span>Created by {workflow.created_by}</span>
+      <span>{Calendar.strftime(workflow.inserted_at, "%b %d, %Y")}</span>
+    </div>
+  </div>
+</div>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="workflow-modal"
+  show
+  on_cancel={JS.patch(~p"/workflows")}
+>
+  <.live_component
+    module={LiveflowWeb.WorkflowLive.FormComponent}
+    id={@workflow.id || :new}
+    title={@page_title}
+    action={@live_action}
+    workflow={@workflow}
+    patch={~p"/workflows"}
+  />
+</.modal>

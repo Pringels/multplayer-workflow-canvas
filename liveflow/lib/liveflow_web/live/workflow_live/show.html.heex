@@ -1,0 +1,46 @@
+<.header>
+  Workflow {@workflow.name}
+  <:subtitle>{@workflow.description}</:subtitle>
+  <:actions>
+    <.link patch={~p"/workflows/#{@workflow}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit workflow</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<div class="mt-6">
+  <h3 class="text-lg font-medium text-gray-900 mb-4">Workflow Canvas</h3>
+  <div
+    id="workflow-canvas-container"
+    phx-hook="WorkflowCanvas"
+    data-workflow-data={Jason.encode!(@workflow_data)}
+    class="border border-gray-200 rounded-lg bg-white"
+  >
+  </div>
+</div>
+
+<.list>
+  <:item title="Name">{@workflow.name}</:item>
+  <:item title="Description">{@workflow.description}</:item>
+  <:item title="Created by">{@workflow.created_by}</:item>
+  <:item title="Nodes">{length(@workflow.nodes)}</:item>
+  <:item title="Edges">{length(@workflow.edges)}</:item>
+</.list>
+
+<.back navigate={~p"/workflows"}>Back to workflows</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="workflow-modal"
+  show
+  on_cancel={JS.patch(~p"/workflows/#{@workflow}")}
+>
+  <.live_component
+    module={LiveflowWeb.WorkflowLive.FormComponent}
+    id={@workflow.id}
+    title={@page_title}
+    action={@live_action}
+    workflow={@workflow}
+    patch={~p"/workflows/#{@workflow}"}
+  />
+</.modal>

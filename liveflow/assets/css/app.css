@@ -1,0 +1,73 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* This file is for your main application CSS */
+
+/* Workflow Canvas Styles */
+.workflow-node {
+  transition: all 0.2s ease-in-out;
+}
+
+.workflow-node:hover {
+  transform: translateY(-1px);
+}
+
+.workflow-edge {
+  transition: all 0.2s ease-in-out;
+}
+
+.workflow-edge:hover {
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.node-rect.selected {
+  filter: drop-shadow(0 4px 8px rgba(59, 130, 246, 0.3));
+  animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+  0%, 100% {
+    stroke-width: 3px;
+  }
+  50% {
+    stroke-width: 4px;
+  }
+}
+
+/* Canvas Controls */
+#canvas-controls button {
+  transition: all 0.2s ease-in-out;
+  font-family: system-ui, sans-serif;
+  font-weight: 500;
+}
+
+#canvas-controls button:hover {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Node Info Panel */
+#node-info {
+  font-family: system-ui, sans-serif;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Workflow List Enhancements */
+.workflow-card {
+  transition: all 0.2s ease-in-out;
+}
+
+.workflow-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
